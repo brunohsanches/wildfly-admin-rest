@@ -3,6 +3,8 @@ package org.wildfly.admin.impl;
 import static org.wildfly.admin.AdminUtil.CLI.*;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -104,8 +106,38 @@ public class AdminImpl implements Admin {
     
     private Set<String> getDataSourceTmplete() throws AdminException {
         
-        List<ModelNode> list = this.execute(buildRequest(createXADataSource_data_source_resource_description)).asList();
-        return null;
+        Set<String> propSet = new HashSet<String>();
+        List<ModelNode> list = this.execute(buildRequest(createDataSource_data_source_resource_description)).asList();
+        
+        for(ModelNode node : list) {
+            if(node.asProperty().getName().equals("attributes")){
+                ModelNode attrNode = node.asProperty().getValue();
+                List<ModelNode> sublist = attrNode.asList();
+                for(ModelNode subnode : sublist){
+                    propSet.add(subnode.asProperty().getName());
+                }
+                
+            }          
+        }
+        return propSet;
+    }
+    
+    private Set<String> getXADataSourceTmplete() throws AdminException {
+        
+        Set<String> propSet = new HashSet<String>();
+        List<ModelNode> list = this.execute(buildRequest(createXADataSource_xa_data_source_resource_description)).asList();
+        
+        for(ModelNode node : list) {
+            if(node.asProperty().getName().equals("attributes")){
+                ModelNode attrNode = node.asProperty().getValue();
+                List<ModelNode> sublist = attrNode.asList();
+                for(ModelNode subnode : sublist){
+                    propSet.add(subnode.asProperty().getName());
+                }
+                
+            }          
+        }
+        return propSet;
     }
     
     @Override
@@ -154,18 +186,55 @@ public class AdminImpl implements Admin {
             throw new AdminValidatiopnException(driverName + " not exist");
         }
         
-        Set<String> allowedProperties = getDataSourceTmplete();
+        Iterator<String> iterator = getDataSourceTmplete().iterator();
+        StringBuffer sb = new StringBuffer();
+        while(iterator.hasNext()){
+            String key = iterator.next();
+            Object value = properties.remove(key);
+            if(value != null){
+                sb.append(", ");
+                sb.append(key).append("=").append("\"").append(value).append("\"");
+            }
+        }
  
-        //TODO
-        return null;
-    }
-
-    
+        return this.execute(buildRequest(createDataSource, removeJavaContext(deploymentName), driverName, addJavaContext(deploymentName), sb.toString()));
+    }  
 
     @Override
     public ModelNode createXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException {
-        // TODO Auto-generated method stub
-        return null;
+        
+        deploymentName = removeJavaContext(deploymentName);
+        
+        ModelNode dsResult = this.getInstalledXADataSourceNames();
+        for(ModelNode node : dsResult.asList()){
+            if(node.asString().equals(deploymentName)){
+                throw new AdminValidatiopnException(deploymentName + " aready exist");
+            }
+        }
+        
+        if(this.getInstalledJDBCDriver(driverName).hasDefined("failure-description")){
+            throw new AdminValidatiopnException(driverName + " not exist");
+        }
+        
+        Iterator<String> iterator = getXADataSourceTmplete().iterator();
+        StringBuffer sb = new StringBuffer();
+        while(iterator.hasNext()){
+            String key = iterator.next();
+            Object value = properties.remove(key);
+            if(value != null){
+                sb.append(", ");
+                sb.append(key).append("=").append("\"").append(value).append("\"");
+            }
+        }
+        String optionArgu = sb.toString();
+        sb.delete(0, sb.length());
+        
+        for(Object obj : properties.keySet()){
+            String key = (String) obj;
+            sb.append("--" + key).append("=>").append(properties.getProperty(key));
+        }
+              
+        return this.execute(buildRequest(createXADataSource, removeJavaContext(deploymentName), driverName, addJavaContext(deploymentName), optionArgu, sb.toString()));
     }
 
     

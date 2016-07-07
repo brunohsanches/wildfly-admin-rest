@@ -1,19 +1,25 @@
 package org.wildfly.admin.rest.resource;
 
 import static org.wildfly.admin.AdminUtil.admin;
+
+import java.util.Properties;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.wildfly.admin.AdminException;
+import org.wildfly.admin.AdminUtil;
 
 @Path("/datasources")
 @Produces({MediaType.APPLICATION_JSON })
@@ -66,6 +72,26 @@ public class DataSourceResource {
     @ApiResponses({@ApiResponse(code = 404, message = "operation error")})
     public String getInstalledDataSourceDriver(@ApiParam(value = "driverName", required = true) @PathParam("driverName") String driverName) throws AdminException{
         return admin().getInstalledJDBCDriver(driverName).toJSONString(true);
+    }
+    
+    @POST
+    @Path("/createDataSource")
+    @Consumes({MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Add a no-xa datasource")
+    @ApiResponses({@ApiResponse(code = 404, message = "operation error")})
+    public String createDataSource(@ApiParam(value = "datasource name", required = true) String deploymentName, @ApiParam(value = "jdbc driver name", required = true)String driverName, @ApiParam(value = "comma separate properties, eg a=x,b=y", required = true)String properties) throws AdminException {
+        Properties prop = AdminUtil.loadProperties(properties);
+        return admin().createDataSource(deploymentName, driverName, prop).toJSONString(true);
+    }
+    
+    @POST
+    @Path("/createXADataSource")
+    @Consumes({MediaType.APPLICATION_JSON })
+    @ApiOperation(value = "Add a xa datasource")
+    @ApiResponses({@ApiResponse(code = 404, message = "operation error")})
+    public String createXADataSource(@ApiParam(value = "xa datasource name", required = true) String deploymentName, @ApiParam(value = "jdbc driver name", required = true)String driverName, @ApiParam(value = "comma separate properties, eg a=x,b=y", required = true)String properties) throws AdminException {
+        Properties prop = AdminUtil.loadProperties(properties);
+        return admin().createXADataSource(deploymentName, driverName, prop).toJSONString(true);
     }
 
 }

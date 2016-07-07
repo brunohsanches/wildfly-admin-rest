@@ -11,7 +11,7 @@ import javax.ws.rs.core.Application;
 
 import org.wildfly.admin.rest.resource.DataSourceResource;
 
-@ApplicationPath("/")
+@ApplicationPath("/api")
 public class WildFlyAdminApplication extends Application {
 
     private Set<Object> singletons = new HashSet<Object>();

@@ -22,13 +22,13 @@ public class BootstrapServlet extends HttpServlet {
         config.setSchemes(new String[] { "http", "https"});  
         config.setTitle("WildFly Admin Rest");
 //        config.setVersion("1.0");
-        config.setDescription("WildFly Admin Rest Service With Swagger");
+        config.setDescription("WildFly Admin Rest Service API Document");
         
         config.setLicense("Apache 2.0");
         config.setLicenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html");
         
 //        config.setHost("localhost:8080");
-//        config.setBasePath("/");
+        config.setBasePath("/api");
         
         config.setScan(true);
     }

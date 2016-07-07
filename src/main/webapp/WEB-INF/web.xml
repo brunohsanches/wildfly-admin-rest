@@ -8,6 +8,7 @@
         <param-value>org.wildfly.admin.rest.DefaultExceptionHandler</param-value>
 	</context-param>
 	
+	<!--  
 	<servlet>
         <servlet-name>APIDocServlet</servlet-name>
         <servlet-class>org.wildfly.admin.rest.APIDocServlet</servlet-class>
@@ -16,9 +17,9 @@
     
     <servlet-mapping>
         <servlet-name>APIDocServlet</servlet-name>
-        <url-pattern>/api</url-pattern>
+        <url-pattern>/doc</url-pattern>
     </servlet-mapping>
 	
-	
+	-->
 	
 </web-app>

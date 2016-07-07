@@ -1,6 +1,9 @@
 package org.wildfly.admin;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class AdminUtil {
@@ -30,6 +33,24 @@ public class AdminUtil {
         return getString(cli.name(), parameters);
     }
     
+    public static Properties loadProperties(String properties) throws AdminException {
+        properties = properties.replaceAll("\\\\", "\\\\\\\\");
+        properties = properties.replaceAll(",", "\n");
+        ByteArrayInputStream is = new ByteArrayInputStream(properties.getBytes());
+        Properties props = new Properties();
+        try {
+            props.load(is);
+        } catch (IOException e) {
+            throw new AdminException(e);
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+            }
+        }
+        return props;
+    }
+    
     static Admin admin = null;
     
     public static Admin admin() throws AdminException{
@@ -46,9 +67,10 @@ public class AdminUtil {
         getInstalledXADataSourceNames,
         getInstalledJDBCDrivers,
         getInstalledJDBCDriver,
-        createXADataSource_data_source_resource_description,
-        createXADataSource,
+        createDataSource_data_source_resource_description,
+        createDataSource,
         createXADataSource_xa_data_source_resource_description,
+        createXADataSource,
         createXADataSource_xa_datasource_class_validation
     }
 }

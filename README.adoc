@@ -1,1 +1,31 @@
-# wildfly-cli-rest
+
+= wildfly Admin Rest
+
+`wildfly-admin-rest` build on top of https://docs.jboss.org/author/display/WFLY10/CLI+Recipes[Wildfly Management CLI], provide a rest layer for WildFly Admin.
+
+== Build
+
+- install JDK 1.8 or higher
+- install maven 3 - http://maven.apache.org/download.html
+- Create a github account and fork Project
+
+Enter the following:
+
+----
+$ git clone https://github.com/<yourname>/wildfly-admin-rest.git
+$ cd wildfly-admin-rest
+$ mvn clean install
+----
+
+you can find the following artifacts in the "target" directory 
+
+* wildfly-admin-rest-swarm.jar
+* wildfly-admin-rest.war
+
+== Run
+
+----
+$ java -jar wildfly-admin-rest-swarm.jar
+----
+
+Loading http://localhost:8080/doc will show all exist api.
