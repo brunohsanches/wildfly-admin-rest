@@ -19,34 +19,25 @@ import org.wildfly.admin.impl.AdminImpl;
 public interface Admin {
     
     /**
-     * Get Installed DataSource
-     * @param datasourceName
-     * @return
-     * @throws AdminException
-     */
-    ModelNode getInstalledDataSource(String datasourceName)throws AdminException;
-    
-    /**
-     * Get Installed XA DataSource
-     * @param datasourceName
-     * @return
-     * @throws AdminException
-     */
-    ModelNode getInstalledXADataSource(String datasourceName)throws AdminException;
-    
-    /**
-     * Get Installed DataSource Name
+     * Get All Installed DataSource Name
      * @return
      * @throws AdminException
      */
     ModelNode getInstalledDataSourceNames() throws AdminException;
     
     /**
-     * Get Installed XA DataSource Name
+     * Get All Installed XA DataSource Name
      * @return
      * @throws AdminException
      */
     ModelNode getInstalledXADataSourceNames() throws AdminException;
+    
+    /**
+     * Get All Installed JDBC Driver Name
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getInstalledJDBCDriverNames() throws AdminException;
     
     /**
      * Get all installed DataSource driver  
@@ -62,13 +53,165 @@ public interface Admin {
     ModelNode getInstalledJDBCDriver(String driverName) throws AdminException;
     
     /**
+     * Create A JDBC Driver
+     * @param driverName
+     * @param driverModuleName
+     * @param properties
+     * @return
+     * @throws AdminException
+     */
+    ModelNode addJDBCDriver(String driverName, String driverModuleName, Properties properties) throws AdminException;
+    
+    /**
+     * Remove the jdbc driver
+     * @param driverName
+     * @return
+     * @throws AdminException
+     */
+    ModelNode removeJDBCDriver(String driverName) throws AdminException;
+    
+    /**
      * Creates a JCA data source
      * @param deploymentName - name of the source
      * @param templateName - template of data source
      * @param properties - properties
      * @throws AdminException
      */
-    ModelNode createDataSource(String deploymentName, String driverName, Properties properties) throws AdminException;
+    ModelNode addDataSource(String deploymentName, String driverName, Properties properties) throws AdminException;
+    
+    /**
+     * Get Installed DataSource
+     * @param datasourceName
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getInstalledDataSource(String datasourceName)throws AdminException;
+    
+    /**
+     * Remove the data source
+     * @param dsName
+     * @return
+     * @throws AdminException
+     */
+    ModelNode removeDataSource(String dsName) throws AdminException;
+    
+    /**
+     * Test if a connection can be obtained
+     * @return
+     * @throws AdminException
+     */
+    ModelNode testConnectionInPool(String dsName) throws AdminException;
+    
+    /**
+     * Test if a connection can be obtained base on username/password
+     * @param username - User name to authenticate connection
+     * @param password - Password to authenticate connection
+     * @return
+     * @throws AdminException
+     */
+    ModelNode testConnectionInPool(String dsName, String username, String password) throws AdminException;
+    
+    /**
+     * Dump queued threads in the pool
+     * @return
+     * @throws AdminException
+     */
+    ModelNode dumpQueuedThreadsInPool(String dsName) throws AdminException;
+    
+    /**
+     * Flushes all connections in the pool
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushAllConnectionInPool(String dsName) throws AdminException;
+    
+    /**
+     * Flushes all connections gracefully in the pool
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushGracefullyConnectionInPool(String dsName) throws AdminException;
+    
+    /**
+     * Flushes all idle connections in the pool
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushIdleConnectionInPool(String dsName) throws AdminException;
+    
+    /**
+     * Flushes all invalid connections in the pool
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushInvalidConnectionInPool(String dsName) throws AdminException;
+    
+    /**
+     * Get Installed XA DataSource
+     * @param datasourceName
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getInstalledXADataSource(String datasourceName)throws AdminException;
+    
+    /**
+     * Remove the XA data source
+     * @param xaDsName
+     * @return
+     * @throws AdminException
+     */
+    ModelNode removeXADataSource(String xaDsName) throws AdminException;
+    
+    /**
+     * Test if a connection can be obtained XA Datasource
+     * @return
+     * @throws AdminException
+     */
+    ModelNode testConnectionInPoolXA(String xaDsName) throws AdminException;
+      
+    /**
+     * Test if a connection can be obtained base on username/password XA Datasource
+     * @param username - User name to authenticate connection
+     * @param password - Password to authenticate connection
+     * @return
+     * @throws AdminException
+     */
+    ModelNode testConnectionInPoolXA(String xaDsName, String username, String password) throws AdminException;
+    
+    /**
+     * Dump queued threads in the pool XA Datasource
+     * @return
+     * @throws AdminException
+     */
+    ModelNode dumpQueuedThreadsInPoolXA(String xaDsName) throws AdminException;
+    
+    /**
+     * Flushes all connections in the pool XA Datasource
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushAllConnectionInPoolXA(String xaDsName) throws AdminException;
+    
+    /**
+     * Flushes all connections gracefully in the pool
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushGracefullyConnectionInPoolXA(String xaDsName) throws AdminException;
+    
+    /**
+     * Flushes all idle connections in the pool XA Datasource
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushIdleConnectionInPoolXA(String xaDsName) throws AdminException;
+    
+    /**
+     * Flushes all invalid connections in the pool XA Datasource
+     * @return
+     * @throws AdminException
+     */
+    ModelNode flushInvalidConnectionInPoolXA(String xaDsName) throws AdminException;
 
     /**
      * Creates a JCA xa data source
@@ -77,7 +220,7 @@ public interface Admin {
      * @param properties - properties
      * @throws AdminException
      */
-    ModelNode createXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException;
+    ModelNode addXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException;
     
     public static class Factory {
         

@@ -12,7 +12,7 @@ public class TestAdmin {
 
     @Test
     public void testResourceBundle(){
-        assertEquals(AdminUtil.gs(createXADataSource_xa_data_source_resource_description), "/subsystem=datasources/xa-data-source=foo:read-resource-description()");      
+        assertEquals(AdminUtil.gs(addXADataSource_xa_data_source_resource_description), "/subsystem=datasources/xa-data-source=foo:read-resource-description()");      
     }
     
     @Test

@@ -105,39 +105,57 @@ public class AdminImpl implements Admin {
     }
     
     private Set<String> getDataSourceTmplete() throws AdminException {
-        
-        Set<String> propSet = new HashSet<String>();
-        List<ModelNode> list = this.execute(buildRequest(createDataSource_data_source_resource_description)).asList();
-        
-        for(ModelNode node : list) {
-            if(node.asProperty().getName().equals("attributes")){
-                ModelNode attrNode = node.asProperty().getValue();
-                List<ModelNode> sublist = attrNode.asList();
-                for(ModelNode subnode : sublist){
-                    propSet.add(subnode.asProperty().getName());
-                }
-                
-            }          
-        }
-        return propSet;
+        return this.dumpReadResourceDescription(execute(buildRequest(addDataSource_data_source_resource_description)).asList());
     }
     
     private Set<String> getXADataSourceTmplete() throws AdminException {
-        
-        Set<String> propSet = new HashSet<String>();
-        List<ModelNode> list = this.execute(buildRequest(createXADataSource_xa_data_source_resource_description)).asList();
-        
+        return this.dumpReadResourceDescription(execute(buildRequest(addXADataSource_xa_data_source_resource_description)).asList());
+    }
+    
+    private Set<String> getJDBCDriverTmplete() throws AdminException {
+        return this.dumpReadResourceDescription(execute(buildRequest(addJDBCDriver_jdbc_driver_resource_description)).asList());
+    }
+    
+    private String buildPropertyString(Set<String> propKeys, String prefix, Properties properties, String... excludes) {
+        Set<String> excludesSet = new HashSet<String>();
+        for(String str : excludes){
+            excludesSet.add(str);
+        }
+        Iterator<String> iterator = propKeys.iterator();
+        StringBuffer sb = new StringBuffer();
+        while(iterator.hasNext()){
+            String key = iterator.next();
+            Object value = properties.remove(key);
+            if(excludesSet.contains(key)){
+                continue;
+            }
+            if(value != null){
+                sb.append(", ");
+                if(key.equals("connection-url") || key.equals("URL") || key.equals("url")){
+                    sb.append(prefix + key).append("=").append("\"").append(value).append("\"");
+                } else {
+                    sb.append(prefix + key).append("=").append(value);
+                }
+            }
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * dump the :read-resource-description() result's key to a set
+     */
+    private Set<String> dumpReadResourceDescription(List<ModelNode> list){
+        Set<String> keySet = new HashSet<String>();
         for(ModelNode node : list) {
             if(node.asProperty().getName().equals("attributes")){
                 ModelNode attrNode = node.asProperty().getValue();
                 List<ModelNode> sublist = attrNode.asList();
                 for(ModelNode subnode : sublist){
-                    propSet.add(subnode.asProperty().getName());
+                    keySet.add(subnode.asProperty().getName());
                 }
-                
             }          
         }
-        return propSet;
+        return keySet;
     }
     
     @Override
@@ -161,6 +179,11 @@ public class AdminImpl implements Admin {
     }
 
     @Override
+    public ModelNode getInstalledJDBCDriverNames() throws AdminException {
+        return this.execute(buildRequest(getInstalledJDBCDriverNames));
+    }
+
+    @Override
     public ModelNode getInstalledJDBCDrivers() throws AdminException {
         return this.execute(buildRequest(getInstalledJDBCDrivers));
     }
@@ -171,14 +194,26 @@ public class AdminImpl implements Admin {
     }
 
     @Override
-    public ModelNode createDataSource(String deploymentName, String driverName, Properties properties) throws AdminException {
+    public ModelNode addJDBCDriver(String driverName, String driverModuleName, Properties properties) throws AdminException {
+
+        for(ModelNode node : getInstalledJDBCDriverNames().asList()){
+            if(node.asString().equals(driverName)){
+                throw new AdminValidatiopnException(driverName + " already exist");
+            }
+        }
+        
+        String propString  = this.buildPropertyString(getJDBCDriverTmplete(), "", properties, "driver-name", "driver-module-name");       
+        return this.execute(buildRequest(addJDBCDriver, driverName, driverName, driverModuleName, propString));
+    }
+
+    @Override
+    public ModelNode addDataSource(String deploymentName, String driverName, Properties properties) throws AdminException {
         
         deploymentName = removeJavaContext(deploymentName);
-        
-        ModelNode dsResult = this.getInstalledDataSourceNames();
-        for(ModelNode node : dsResult.asList()){
+
+        for(ModelNode node : getInstalledDataSourceNames().asList()){
             if(node.asString().equals(deploymentName)){
-                throw new AdminValidatiopnException(deploymentName + " aready exist");
+                throw new AdminValidatiopnException(deploymentName + " already exist");
             }
         }
         
@@ -186,29 +221,19 @@ public class AdminImpl implements Admin {
             throw new AdminValidatiopnException(driverName + " not exist");
         }
         
-        Iterator<String> iterator = getDataSourceTmplete().iterator();
-        StringBuffer sb = new StringBuffer();
-        while(iterator.hasNext()){
-            String key = iterator.next();
-            Object value = properties.remove(key);
-            if(value != null){
-                sb.append(", ");
-                sb.append(key).append("=").append("\"").append(value).append("\"");
-            }
-        }
- 
-        return this.execute(buildRequest(createDataSource, removeJavaContext(deploymentName), driverName, addJavaContext(deploymentName), sb.toString()));
+        String propString = this.buildPropertyString(getDataSourceTmplete(), "", properties, "driver-name", "jndi-name");
+        return this.execute(buildRequest(addDataSource, removeJavaContext(deploymentName), driverName, addJavaContext(deploymentName), propString));
     }  
 
     @Override
-    public ModelNode createXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException {
+    public ModelNode addXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException {
         
         deploymentName = removeJavaContext(deploymentName);
         
         ModelNode dsResult = this.getInstalledXADataSourceNames();
         for(ModelNode node : dsResult.asList()){
             if(node.asString().equals(deploymentName)){
-                throw new AdminValidatiopnException(deploymentName + " aready exist");
+                throw new AdminValidatiopnException(deploymentName + " already exist");
             }
         }
         
@@ -216,25 +241,106 @@ public class AdminImpl implements Admin {
             throw new AdminValidatiopnException(driverName + " not exist");
         }
         
-        Iterator<String> iterator = getXADataSourceTmplete().iterator();
-        StringBuffer sb = new StringBuffer();
-        while(iterator.hasNext()){
-            String key = iterator.next();
-            Object value = properties.remove(key);
-            if(value != null){
-                sb.append(", ");
-                sb.append(key).append("=").append("\"").append(value).append("\"");
-            }
-        }
-        String optionArgu = sb.toString();
-        sb.delete(0, sb.length());
+        String optionArgu = this.buildPropertyString(getXADataSourceTmplete(), "--" , properties, "driver-name", "jndi-name", "xa-datasource-properties");
         
+        StringBuffer sb = new StringBuffer();
+        boolean isFirst = true;
         for(Object obj : properties.keySet()){
             String key = (String) obj;
-            sb.append("--" + key).append("=>").append(properties.getProperty(key));
+            if(isFirst){
+                isFirst = false;
+            } else {
+                sb.append(", ");
+            }
+            sb.append(key).append("=>").append(properties.getProperty(key));
         }
               
-        return this.execute(buildRequest(createXADataSource, removeJavaContext(deploymentName), driverName, addJavaContext(deploymentName), optionArgu, sb.toString()));
+        return this.execute(buildRequestSimple(addXADataSource, removeJavaContext(deploymentName), driverName, addJavaContext(deploymentName), optionArgu, sb.toString()));
+    }
+
+    @Override
+    public ModelNode testConnectionInPool(String dsName) throws AdminException {
+        return this.execute(buildRequest(testConnectionInPool, dsName));
+    }
+
+    @Override
+    public ModelNode testConnectionInPool(String dsName, String username, String password) throws AdminException {
+        return this.execute(buildRequest(testConnectionInPoolAuth, dsName, username, password));
+    }
+
+    @Override
+    public ModelNode dumpQueuedThreadsInPool(String dsName) throws AdminException {
+        return this.execute(buildRequest(dumpQueuedThreadsInPool, dsName));
+    }
+
+    @Override
+    public ModelNode flushAllConnectionInPool(String dsName) throws AdminException {
+        return this.execute(buildRequest(flushAllConnectionInPool, dsName));
+    }
+
+    @Override
+    public ModelNode flushGracefullyConnectionInPool(String dsName) throws AdminException {
+        return this.execute(buildRequest(flushGracefullyConnectionInPool, dsName));
+    }
+
+    @Override
+    public ModelNode flushIdleConnectionInPool(String dsName) throws AdminException {
+        return this.execute(buildRequest(flushIdleConnectionInPool, dsName));
+    }
+
+    @Override
+    public ModelNode flushInvalidConnectionInPool(String dsName)throws AdminException {
+        return this.execute(buildRequest(flushInvalidConnectionInPool, dsName));
+    }
+
+    @Override
+    public ModelNode testConnectionInPoolXA(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(testConnectionInPoolXA, xaDsName));
+    }
+
+    @Override
+    public ModelNode testConnectionInPoolXA(String xaDsName, String username, String password) throws AdminException {
+        return this.execute(buildRequest(testConnectionInPoolAuthXA, xaDsName, username, password));
+    }
+
+    @Override
+    public ModelNode dumpQueuedThreadsInPoolXA(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(dumpQueuedThreadsInPoolXA, xaDsName));
+    }
+
+    @Override
+    public ModelNode flushAllConnectionInPoolXA(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(flushAllConnectionInPoolXA, xaDsName));
+    }
+
+    @Override
+    public ModelNode flushGracefullyConnectionInPoolXA(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(flushGracefullyConnectionInPoolXA, xaDsName));
+    }
+
+    @Override
+    public ModelNode flushIdleConnectionInPoolXA(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(flushIdleConnectionInPoolXA, xaDsName));
+    }
+
+    @Override
+    public ModelNode flushInvalidConnectionInPoolXA(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(flushInvalidConnectionInPoolXA, xaDsName));
+    }
+
+    @Override
+    public ModelNode removeDataSource(String dsName) throws AdminException {
+        return this.execute(buildRequest(removeDataSource, dsName));
+    }
+
+    @Override
+    public ModelNode removeXADataSource(String xaDsName) throws AdminException {
+        return this.execute(buildRequest(removeXADataSource, xaDsName));
+    }
+
+    @Override
+    public ModelNode removeJDBCDriver(String driverName) throws AdminException {
+        return this.execute(buildRequest(removeJDBCDriver, driverName));
     }
 
     

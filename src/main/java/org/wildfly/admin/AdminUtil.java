@@ -34,6 +34,9 @@ public class AdminUtil {
     }
     
     public static Properties loadProperties(String properties) throws AdminException {
+        if(properties == null || properties.equals("")){
+            return new Properties();
+        }
         properties = properties.replaceAll("\\\\", "\\\\\\\\");
         properties = properties.replaceAll(",", "\n");
         ByteArrayInputStream is = new ByteArrayInputStream(properties.getBytes());
@@ -60,17 +63,39 @@ public class AdminUtil {
         return admin;
     }
 
-    public static enum CLI {
-        getInstalledDataSource,
-        getInstalledXADataSource,
+    public static enum CLI {       
         getInstalledDataSourceNames,
         getInstalledXADataSourceNames,
+        getInstalledJDBCDriverNames,
         getInstalledJDBCDrivers,
         getInstalledJDBCDriver,
-        createDataSource_data_source_resource_description,
-        createDataSource,
-        createXADataSource_xa_data_source_resource_description,
-        createXADataSource,
-        createXADataSource_xa_datasource_class_validation
+        
+        addJDBCDriver_jdbc_driver_resource_description,
+        addJDBCDriver,
+        removeJDBCDriver,
+        
+        addDataSource_data_source_resource_description,
+        addDataSource,
+        getInstalledDataSource,
+        removeDataSource,
+        testConnectionInPool,
+        testConnectionInPoolAuth,
+        dumpQueuedThreadsInPool,
+        flushAllConnectionInPool,
+        flushGracefullyConnectionInPool,
+        flushIdleConnectionInPool,
+        flushInvalidConnectionInPool,
+        
+        addXADataSource_xa_data_source_resource_description,
+        addXADataSource,
+        getInstalledXADataSource,
+        removeXADataSource,
+        testConnectionInPoolXA,
+        testConnectionInPoolAuthXA,
+        dumpQueuedThreadsInPoolXA,
+        flushAllConnectionInPoolXA,
+        flushGracefullyConnectionInPoolXA,
+        flushIdleConnectionInPoolXA,
+        flushInvalidConnectionInPoolXA
     }
 }
