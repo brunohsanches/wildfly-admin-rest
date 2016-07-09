@@ -222,6 +222,11 @@ public interface Admin {
      */
     ModelNode addXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException;
     
+    /**
+     * Closes the admin connection
+     */
+    void close();
+    
     public static class Factory {
         
         private static Factory INSTANCE = new Factory();

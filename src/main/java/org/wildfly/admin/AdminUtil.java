@@ -6,6 +6,8 @@ import java.text.MessageFormat;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import org.wildfly.admin.impl.AdminImpl;
+
 public class AdminUtil {
     
     static ResourceBundle bundle = ResourceBundle.getBundle("cli");
@@ -62,6 +64,10 @@ public class AdminUtil {
         }
         return admin;
     }
+    
+    public static void setAdmin(AdminImpl adminImpl) {
+        admin = adminImpl;
+    } 
 
     public static enum CLI {       
         getInstalledDataSourceNames,

@@ -343,6 +343,19 @@ public class AdminImpl implements Admin {
         return this.execute(buildRequest(removeJDBCDriver, driverName));
     }
 
+    @Override
+    public void close() {
+        if (this.connection != null) {
+            try {
+                this.connection.close();
+            } catch (Throwable t) {
+                //ignore
+            }
+            this.connection = null;
+            this.domainMode = false;
+        }
+    }
+
     
 
 }

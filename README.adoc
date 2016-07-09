@@ -1,7 +1,7 @@
 
 = wildfly Admin Rest
 
-`wildfly-admin-rest` build on top of https://docs.jboss.org/author/display/WFLY10/CLI+Recipes[Wildfly Management CLI], provide a rest layer for WildFly Admin.
+`wildfly-admin-rest` build on top of https://docs.jboss.org/author/display/WFLY10/CLI+Recipes[Wildfly Management CLI], provide a rest layer for managing WildFly.
 
 == Build
 

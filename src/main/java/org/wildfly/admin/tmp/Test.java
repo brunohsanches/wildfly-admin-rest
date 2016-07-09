@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.enterprise.concurrent.AbortedException;
 
+import org.jboss.dmr.ModelNode;
 import org.wildfly.admin.Admin;
 import org.wildfly.admin.AdminException;
 import org.wildfly.admin.AdminUtil;
@@ -41,14 +42,19 @@ public class Test {
     
     
     static {
-        xaprops.putAll(props);
-        
-        xaprops.setProperty("xa-datasource-properties", "User=sa,Password=sa,URL=" + url + ",Description=\"this is description\"");
+        xaprops.setProperty("use-java-context", "true");
+        xaprops.setProperty("enabled", "true");
+        xaprops.setProperty("min-pool-size", "5");
+        xaprops.setProperty("max-pool-size", "25");
+        xaprops.setProperty("User", "sa");
+        xaprops.setProperty("Password", "sa");
+        xaprops.setProperty("URL", url);
+        xaprops.setProperty("Description", "This is description");
     }
 
     public static void main(String[] args) throws AbortedException, AdminException {
 
-        Admin admin = AdminUtil.admin();
+//        Admin admin = AdminUtil.admin();
         
 //        admin.addJDBCDriver("h3", "com.h2database.h2", driverprops);
 //        System.out.println(admin.getInstalledJDBCDriverNames());
@@ -56,8 +62,9 @@ public class Test {
 //        System.out.println(admin.addDataSource("foo2", "h2", props));
 //        System.out.println(admin.getInstalledDataSourceNames());
         
-        System.out.println(admin.addXADataSource("zoo3", "h2", xaprops));
-        System.out.println(admin.getInstalledXADataSourceNames());
+//        System.out.println(admin.addXADataSource("zoo1", "h2", xaprops));
+//        System.out.println(admin.getInstalledXADataSourceNames());
+//        System.out.println(admin.testConnectionInPoolXA("zoo1"));
         
 //        admin.createDataSource(dsName, "h2", props);
 //        admin.createDataSource(xadsName, "h2", xaprops);
@@ -67,7 +74,12 @@ public class Test {
 //        System.out.println(admin.createXADataSource(dsName, "h2", xaprops));
 //        System.out.println(admin.getInstalledXADataSourceNames());
         
-        System.exit(0);
+//        System.exit(0);
+        
+        ModelNode list = new ModelNode();
+        list.add(new ModelNode());
+        list.add(new ModelNode());
+        System.out.println(list);
     }
 
 }
