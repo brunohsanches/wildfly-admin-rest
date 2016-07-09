@@ -159,6 +159,36 @@ public class AdminImpl implements Admin {
     }
     
     @Override
+    public ModelNode reload() throws AdminException {
+        return this.execute(buildRequest(reload));
+    }
+
+    @Override
+    public ModelNode resume() throws AdminException {
+        return this.execute(buildRequest(resume));
+    }
+
+    @Override
+    public ModelNode suspend() throws AdminException {
+        return this.execute(buildRequest(suspend));
+    }
+
+    @Override
+    public ModelNode shutdown() throws AdminException {
+        return this.execute(buildRequest(shutdown));
+    }
+    
+    @Override
+    public ModelNode restart() throws AdminException {
+        return this.execute(buildRequest(restart));
+    }
+
+    @Override
+    public ModelNode getProductInfo() throws AdminException {
+        return this.execute(buildRequest(getProductInfo));
+    }
+    
+    @Override
     public ModelNode getInstalledDataSource(String datasourceName)throws AdminException {
         return this.execute(buildRequest(getInstalledDataSource, datasourceName));
     }
@@ -355,7 +385,5 @@ public class AdminImpl implements Admin {
             this.domainMode = false;
         }
     }
-
-    
 
 }

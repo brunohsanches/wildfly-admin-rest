@@ -10,6 +10,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import org.wildfly.admin.rest.resource.DataSourceResource;
+import org.wildfly.admin.rest.resource.RootResource;
 
 @ApplicationPath("/api")
 public class WildFlyAdminApplication extends Application {
@@ -20,6 +21,7 @@ public class WildFlyAdminApplication extends Application {
         singletons.add(new ApiListingResource());
         singletons.add(new SwaggerSerializers());
         singletons.add(new DataSourceResource());
+        singletons.add(new RootResource());
     }
     @Override
     public Set<Class<?>> getClasses() {

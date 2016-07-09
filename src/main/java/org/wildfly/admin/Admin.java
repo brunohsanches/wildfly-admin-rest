@@ -19,6 +19,50 @@ import org.wildfly.admin.impl.AdminImpl;
 public interface Admin {
     
     /**
+     * Reloads the server by shutting down all its services and starting again. 
+     * The JVM itself is not restarted
+     * @return
+     * @throws AdminException
+     */
+    ModelNode reload() throws AdminException;
+    
+    /**
+     * Resumes normal operations in a suspended server.
+     * @return
+     * @throws AdminException
+     */
+    ModelNode resume() throws AdminException;
+    
+    /**
+     * Suspends server operations gracefully. All current requests will complete normally, 
+     * however no new requests will be accepted.
+     * @return
+     * @throws AdminException
+     */
+    ModelNode suspend() throws AdminException;
+    
+    /**
+     * Shuts down the server 
+     * @return
+     * @throws AdminException
+     */
+    ModelNode shutdown() throws AdminException;
+    
+    /**
+     * Restart the server
+     * @return
+     * @throws AdminException
+     */
+    ModelNode restart() throws AdminException;
+    
+    /**
+     * Get product info report
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getProductInfo() throws AdminException;
+    
+    /**
      * Get All Installed DataSource Name
      * @return
      * @throws AdminException

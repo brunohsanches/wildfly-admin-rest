@@ -69,7 +69,14 @@ public class AdminUtil {
         admin = adminImpl;
     } 
 
-    public static enum CLI {       
+    public static enum CLI {    
+        reload,
+        resume,
+        suspend,
+        shutdown,
+        restart,
+        getProductInfo,
+        
         getInstalledDataSourceNames,
         getInstalledXADataSourceNames,
         getInstalledJDBCDriverNames,
