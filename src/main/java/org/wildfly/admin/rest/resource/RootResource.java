@@ -65,5 +65,29 @@ public class RootResource {
     public String getProductInfo() throws AdminException {
         return admin().getProductInfo().toJSONString(true);
     }
+    
+    @GET
+    @Path("/product-version")
+    @ApiOperation(value = "Checking the WildFly version", notes = "Checking the WildFly version as return json")
+    @ApiResponses({@ApiResponse(code = 404, message = "operation error")})
+    public String getProductVersion() throws AdminException {
+        return admin().getProductVersion().toJSONString(true);
+    }
+    
+    @GET
+    @Path("/launch-type")
+    @ApiOperation(value = "Checking WildlyFly operational mode", notes = "Checking WildlyFly operational mode as return json")
+    @ApiResponses({@ApiResponse(code = 404, message = "operation error")})
+    public String getLaunchType() throws AdminException {
+        return admin().getLaunchType().toJSONString(true);
+    }
+    
+    @GET
+    @Path("/server-state")
+    @ApiOperation(value = "Checking server status", notes = "Checking server status as return json")
+    @ApiResponses({@ApiResponse(code = 404, message = "operation error")})
+    public String getServerState() throws AdminException {
+        return admin().getServerState().toJSONString(true);
+    }
 
 }

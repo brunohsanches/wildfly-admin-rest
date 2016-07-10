@@ -76,7 +76,23 @@ public class AdminUtil {
         shutdown,
         restart,
         getProductInfo,
+        getProductVersion,
+        getLaunchType,
+        getServerState,
         
+        // core services
+        getOSVersion,
+        getJVMVersion,
+        getJVMOptions,
+        getJVMMemoryHeap,
+        getJVMMemoryNonHeap,
+        getJVMMemoryMetaspace,
+        getJVMMemoryEden,
+        getJVMMemoryOldGen,
+        getJVMMemorySurvivor,
+        getSystemProperties,
+        
+        // datasources subsystem
         getInstalledDataSourceNames,
         getInstalledXADataSourceNames,
         getInstalledJDBCDriverNames,
@@ -109,6 +125,9 @@ public class AdminUtil {
         flushAllConnectionInPoolXA,
         flushGracefullyConnectionInPoolXA,
         flushIdleConnectionInPoolXA,
-        flushInvalidConnectionInPoolXA
+        flushInvalidConnectionInPoolXA,
+        
+        // naming subsystem
+        getJNDIView
     }
 }

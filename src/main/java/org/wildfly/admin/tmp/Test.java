@@ -54,7 +54,13 @@ public class Test {
 
     public static void main(String[] args) throws AbortedException, AdminException {
 
-//        Admin admin = AdminUtil.admin();
+        Admin admin = AdminUtil.admin();
+        
+        System.out.println(admin.getJVMVersion());
+        System.out.println(admin.getProductVersion());
+        System.out.println(admin.getLaunchType());
+        
+        admin.close();
         
 //        admin.addJDBCDriver("h3", "com.h2database.h2", driverprops);
 //        System.out.println(admin.getInstalledJDBCDriverNames());
@@ -76,10 +82,10 @@ public class Test {
         
 //        System.exit(0);
         
-        ModelNode list = new ModelNode();
-        list.add(new ModelNode());
-        list.add(new ModelNode());
-        System.out.println(list);
+//        ModelNode list = new ModelNode();
+//        list.add(new ModelNode());
+//        list.add(new ModelNode());
+//        System.out.println(list);
     }
 
 }

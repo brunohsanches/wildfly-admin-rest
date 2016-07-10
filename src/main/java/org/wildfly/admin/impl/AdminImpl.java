@@ -21,6 +21,7 @@ import org.wildfly.admin.Admin;
 import org.wildfly.admin.AdminException;
 import org.wildfly.admin.AdminUtil;
 import org.wildfly.admin.AdminUtil.CLI;
+import org.wildfly.admin.Standalone;
 
 public class AdminImpl implements Admin {
     
@@ -104,6 +105,15 @@ public class AdminImpl implements Admin {
         }
     }
     
+    private ModelNode executeSimple(ModelNode request) throws AdminException{
+        try {
+            ModelNode outcome = this.connection.execute(request);
+            return outcome;
+        } catch (IOException e) {
+            throw new AdminException(e);
+        }
+    }
+    
     private Set<String> getDataSourceTmplete() throws AdminException {
         return this.dumpReadResourceDescription(execute(buildRequest(addDataSource_data_source_resource_description)).asList());
     }
@@ -159,35 +169,105 @@ public class AdminImpl implements Admin {
     }
     
     @Override
+    @Standalone
     public ModelNode reload() throws AdminException {
         return this.execute(buildRequest(reload));
     }
 
     @Override
+    @Standalone
     public ModelNode resume() throws AdminException {
         return this.execute(buildRequest(resume));
     }
 
     @Override
+    @Standalone
     public ModelNode suspend() throws AdminException {
         return this.execute(buildRequest(suspend));
     }
 
     @Override
+    @Standalone
     public ModelNode shutdown() throws AdminException {
         return this.execute(buildRequest(shutdown));
     }
     
     @Override
+    @Standalone
     public ModelNode restart() throws AdminException {
         return this.execute(buildRequest(restart));
     }
 
     @Override
     public ModelNode getProductInfo() throws AdminException {
-        return this.execute(buildRequest(getProductInfo));
+        return this.execute(buildRequestSimple(getProductInfo));
     }
     
+    @Override
+    public ModelNode getProductVersion() throws AdminException {
+        return this.executeSimple(buildRequestSimple(getProductVersion));
+    }
+
+    @Override
+    public ModelNode getLaunchType() throws AdminException {
+        return this.executeSimple(buildRequestSimple(getLaunchType));
+    }
+
+    @Override
+    public ModelNode getServerState() throws AdminException {
+        return this.execute(buildRequestSimple(getServerState));
+    }
+
+    @Override
+    public ModelNode getOSVersion() throws AdminException {
+        return this.execute(buildRequest(getOSVersion));
+    }
+
+    @Override
+    public ModelNode getJVMVersion() throws AdminException {
+        return this.executeSimple(buildRequest(getJVMVersion));
+    }
+
+    @Override
+    public ModelNode getJVMOptions() throws AdminException {
+        return this.execute(buildRequest(getJVMOptions));
+    }
+
+    @Override
+    public ModelNode getJVMMemoryHeap() throws AdminException {
+        return this.execute(buildRequest(getJVMMemoryHeap));
+    }
+
+    @Override
+    public ModelNode getJVMMemoryNonHeap() throws AdminException {
+        return this.execute(buildRequest(getJVMMemoryNonHeap));
+    }
+
+    @Override
+    public ModelNode getJVMMemoryMetaspace() throws AdminException {
+        return this.execute(buildRequest(getJVMMemoryMetaspace));
+    }
+
+    @Override
+    public ModelNode getJVMMemoryEden() throws AdminException {
+        return this.execute(buildRequest(getJVMMemoryEden));
+    }
+
+    @Override
+    public ModelNode getJVMMemoryOldGen() throws AdminException {
+        return this.execute(buildRequest(getJVMMemoryOldGen));
+    }
+
+    @Override
+    public ModelNode getJVMMemorySurvivor() throws AdminException {
+        return this.execute(buildRequest(getJVMMemorySurvivor));
+    }
+
+    @Override
+    public ModelNode getSystemProperties() throws AdminException {
+        return this.execute(buildRequest(getSystemProperties));
+    }
+
     @Override
     public ModelNode getInstalledDataSource(String datasourceName)throws AdminException {
         return this.execute(buildRequest(getInstalledDataSource, datasourceName));
@@ -371,6 +451,11 @@ public class AdminImpl implements Admin {
     @Override
     public ModelNode removeJDBCDriver(String driverName) throws AdminException {
         return this.execute(buildRequest(removeJDBCDriver, driverName));
+    }
+
+    @Override
+    public ModelNode getJNDIView() throws AdminException {
+        return this.execute(buildRequest(getJNDIView));
     }
 
     @Override

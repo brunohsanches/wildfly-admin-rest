@@ -9,7 +9,9 @@ import java.util.HashSet;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
+import org.wildfly.admin.rest.resource.CoreSeriveResource;
 import org.wildfly.admin.rest.resource.DataSourceResource;
+import org.wildfly.admin.rest.resource.NamingResource;
 import org.wildfly.admin.rest.resource.RootResource;
 
 @ApplicationPath("/api")
@@ -20,8 +22,10 @@ public class WildFlyAdminApplication extends Application {
     public WildFlyAdminApplication(){
         singletons.add(new ApiListingResource());
         singletons.add(new SwaggerSerializers());
-        singletons.add(new DataSourceResource());
         singletons.add(new RootResource());
+        singletons.add(new CoreSeriveResource());
+        singletons.add(new DataSourceResource());
+        singletons.add(new NamingResource());
     }
     @Override
     public Set<Class<?>> getClasses() {

@@ -63,6 +63,101 @@ public interface Admin {
     ModelNode getProductInfo() throws AdminException;
     
     /**
+     * Checking the WildFly version
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getProductVersion() throws AdminException;
+    
+    /**
+     * Checking WildlyFly operational mode
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getLaunchType() throws AdminException;
+    
+    /**
+     * Checking server status
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getServerState() throws AdminException;
+    
+    //------------ Core Service Start ---------------------------
+    
+    /**
+     * Getting OS version
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getOSVersion() throws AdminException;
+    
+    /**
+     * Getting JVM version
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMVersion() throws AdminException;
+    
+    /**
+     * Checking JVM memories - heap
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMMemoryHeap() throws AdminException;
+    
+    /**
+     * Checking JVM memories - non-heap
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMMemoryNonHeap() throws AdminException;
+    
+    /**
+     * Checking JVM memories - Metaspace
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMMemoryMetaspace() throws AdminException;
+    
+    /**
+     * Checking JVM memories - Eden
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMMemoryEden() throws AdminException;
+    
+    /**
+     * Checking JVM memories - OldGen
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMMemoryOldGen() throws AdminException;
+    
+    /**
+     * Checking JVM memories - Survivor
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMMemorySurvivor() throws AdminException;
+    
+    /**
+     * Checking JVM options
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJVMOptions() throws AdminException;
+    
+    /**
+     * Getting System Properties
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getSystemProperties() throws AdminException;
+    
+    //------------ DataSource Start ------------------------------
+    
+    /**
      * Get All Installed DataSource Name
      * @return
      * @throws AdminException
@@ -265,6 +360,15 @@ public interface Admin {
      * @throws AdminException
      */
     ModelNode addXADataSource(String deploymentName, String driverName, Properties properties) throws AdminException;
+    
+    //------------ Naming Start ---------------------------
+    
+    /**
+     * Checking JNDI tree view
+     * @return
+     * @throws AdminException
+     */
+    ModelNode getJNDIView() throws AdminException;
     
     /**
      * Closes the admin connection
